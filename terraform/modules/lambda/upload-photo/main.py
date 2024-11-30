@@ -15,10 +15,26 @@ def handler(event, context):
     uniquehash = hashlib.sha1("{}".format(time.time_ns()).encode('utf-8')).hexdigest()
     result = create_presigned_post(images_bucket, "new/{}/{}".format(uniquehash[:2],uniquehash))
 
+    if not result:
+        return {
+            'statusCode': 500,
+            'headers': {
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Access-Control-Allow-Origin': '*',  # Allow all origins
+                'Access-Control-Allow-Methods': 'GET, POST',  # Allowed methods
+                'Access-Control-Allow-Headers': 'Authorization, Content-Type',  # Allowed headers
+            },
+            'body': json.dumps({'error': 'Could not generate pre-signed URL'})
+        }
+
+    # Return the pre-signed URL response with CORS headers
     return {
         'statusCode': 200,
         'headers': {
-            'Content-Type': 'application/json; charset=UTF-8'
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Access-Control-Allow-Origin': '*',  # Allow all origins
+            'Access-Control-Allow-Methods': 'GET, POST',  # Allowed methods
+            'Access-Control-Allow-Headers': 'Authorization, Content-Type',  # Allowed headers
         },
         'body': json.dumps(result)
     }

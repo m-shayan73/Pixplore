@@ -100,9 +100,10 @@
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("idToken", idToken);
 
-      var getSignedUrlEndpoint = window.location.href
-        .split("#")[0]
-        .replace("web", "signedUrl");
+      console.log(window.location.href);
+
+      var getSignedUrlEndpoint =
+        window.location.href.split("/prod")[0] + "/prod/upload-photo";
       var searchImageEndpoint = window.location.href
         .split("#")[0]
         .replace("web", "search");
@@ -116,8 +117,10 @@
       function getSignedUrl() {
         $.ajax({
           url: getSignedUrlEndpoint,
-          headers: { Authorization: idToken },
-          type: "GET",
+          headers: {
+            Authorization: idToken,
+          },
+          type: "POST",
           contentType: "application/json; charset=utf-8",
           success: function (result) {
             console.log(result);
